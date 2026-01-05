@@ -17,22 +17,22 @@ class StateProtocol(Protocol):
     - What to do if detection fails
     
     Example:
-        class UsernameState:
+        class FormInputState:
             def handle(self, context):
                 # State-specific logic can go here
                 # Or just let ProcessRunner handle screen detection
                 pass
-            
+
             def get_expected_screens(self):
                 return [
-                    GoogleLoginScreens.USERNAME,
-                    GoogleLoginScreens.ERROR,
-                    GoogleLoginScreens.WRONG_USERNAME,
+                    Screens.FORM_INPUT,
+                    Screens.ERROR,
+                    Screens.VALIDATION_FAILED,
                 ]
-            
+
             def on_detection_failed(self, context):
                 # Custom failure handling
-                context.transition_to(LoginFailureState())
+                context.transition_to(FailureState())
     """
     
     def handle(self, context: 'ProcessContext') -> None:
@@ -60,9 +60,9 @@ class StateProtocol(Protocol):
             
         Example:
             [
-                LoginScreens.USERNAME,
-                LoginScreens.ERROR,
-                LoginScreens.ALREADY_LOGGED_IN,
+                Screens.FORM_INPUT,
+                Screens.ERROR,
+                Screens.ALREADY_COMPLETED,
             ]
         """
         ...
@@ -79,7 +79,7 @@ class StateProtocol(Protocol):
             
         Example:
             def on_detection_failed(self, context):
-                logging.error("Login screen not found")
-                context.transition_to(LoginFailureState())
+                logging.error("Expected screen not found")
+                context.transition_to(FailureState())
         """
         ...

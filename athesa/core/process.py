@@ -17,35 +17,35 @@ class ProcessProtocol(Protocol):
     No inheritance required - any class implementing these properties works.
     
     Example:
-        class LoginProcess:
+        class MyProcess:
             @property
             def name(self) -> str:
-                return "login_flow"
-            
+                return "my_process"
+
             @property
             def initial_state(self):
-                return LoginInitialState
-            
+                return InitialState
+
             @property
             def registry(self):
                 return {
-                    LoginScreens.USERNAME: UsernameHandler(),
-                    LoginScreens.PASSWORD: PasswordHandler(),
+                    Screens.STEP_ONE: StepOneHandler(),
+                    Screens.STEP_TWO: StepTwoHandler(),
                 }
             
             @property
             def screens(self):
                 return [
                     ScreenDefinition(
-                        type=LoginScreens.USERNAME,
-                        selector=(By.CSS, 'input[type="email"]')
+                        type=Screens.STEP_ONE,
+                        selector=(By.CSS, '#step-one')
                     ),
                     ...
                 ]
-            
+
             @property
             def final_states(self):
-                return (LoginSuccessState, LoginFailureState)
+                return (SuccessState, FailureState)
     """
     
     @property
@@ -54,7 +54,7 @@ class ProcessProtocol(Protocol):
         Unique process identifier.
         
         Returns:
-            Process name (e.g., "google_login", "youtube_upload")
+            Process name (e.g., "checkout_flow", "user_registration")
         """
         ...
     
@@ -80,8 +80,8 @@ class ProcessProtocol(Protocol):
             
         Example:
             {
-                GoogleLoginScreens.USERNAME: UsernameHandler(),
-                GoogleLoginScreens.PASSWORD: PasswordHandler(),
+                Screens.FORM_INPUT: FormInputHandler(),
+                Screens.CONFIRMATION: ConfirmationHandler(),
             }
         """
         ...

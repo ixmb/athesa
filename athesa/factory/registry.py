@@ -16,20 +16,20 @@ class ProcessRegistry:
     
     Example:
         from athesa.factory import registry
-        
+
         # Register processes
-        registry.register('google_login', GoogleLoginProcess)
-        registry.register('youtube_upload', YouTubeUploadProcess)
-        
+        registry.register('checkout', CheckoutProcess)
+        registry.register('registration', RegistrationProcess)
+
         # List available
-        print(registry.list())  # ['google_login', 'youtube_upload']
-        
+        print(registry.list())  # ['checkout', 'registration']
+
         # Get process class
-        LoginProcess = registry.get('google_login')
-        process_instance = LoginProcess()
-        
+        ProcessClass = registry.get('checkout')
+        process_instance = ProcessClass()
+
         # Create instance directly
-        process = registry.create('google_login')
+        process = registry.create('checkout')
     """
     
     def __init__(self):
@@ -54,7 +54,7 @@ class ProcessRegistry:
             ValueError: If process already registered and force=False
             
         Example:
-            registry.register('login', GoogleLoginProcess)
+            registry.register('checkout', CheckoutProcess)
         """
         if name in self._processes and not force:
             raise ValueError(
@@ -90,7 +90,7 @@ class ProcessRegistry:
             Process class, or None if not found
             
         Example:
-            ProcessClass = registry.get('google_login')
+            ProcessClass = registry.get('checkout')
             if ProcessClass:
                 process = ProcessClass()
         """
