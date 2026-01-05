@@ -23,12 +23,12 @@ class DetectionStrategy(Enum):
 class ScreenDefinition:
     """
     Defines how to identify a screen/page state.
-    
+
     A screen is detected by:
     1. Main selector (CSS, XPath, etc.)
     2. Detection strategy (visible vs presence)
     3. Optional verification criteria (lambda checks)
-    
+
     Attributes:
         type: Unique identifier (usually enum value)
         selector: Tuple of (by, value) e.g., (By.CSS, '#login-form')
@@ -36,7 +36,7 @@ class ScreenDefinition:
         detection_strategy: How to verify element presence
         verification_criteria: Additional lambda checks
         metadata: Custom metadata for this screen
-        
+
     Example:
         ScreenDefinition(
             type=LoginScreens.USERNAME,
@@ -51,15 +51,23 @@ class ScreenDefinition:
     # Required
     type: Any  # Usually Enum value
     selector: Tuple[str, str]  # (by, value) e.g., (By.CSS, '#id')
-    
+
     # Optional
     selector_name: Optional[str] = None
     detection_strategy: DetectionStrategy = DetectionStrategy.VISIBLE_AND_ENABLED
     verification_criteria: List[Callable[[Any], bool]] = field(default_factory=list)
     metadata: dict = field(default_factory=dict)
-    
+
+    # Backwards compatibility
+    by: Optional[str] = field(default=None, repr=False)
+
     def __post_init__(self):
-        """Auto-generate selector_name if not provided"""
+        """Auto-generate selector_name if not provided, handle 'by' parameter."""
+        # Handle 'by' parameter for backwards compatibility
+        if self.by is not None:
+            self.selector = (self.by, self.selector)
+            self.by = None  # Clear to avoid confusion
+
         if not self.selector_name:
             # Use type name as fallback
             if hasattr(self.type, 'name'):
